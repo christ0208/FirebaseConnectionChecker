@@ -1,0 +1,71 @@
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-database.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<div>
+  <div>Connection to Database:</div>
+  <div id="connection-status">Waiting</div>
+</div>
+<div>
+  <div>Read Status:</div>
+  <div id="read-status">Waiting</div>
+</div>
+<div>
+  <div>Write Status: </div>
+  <div id="write-status">Waiting</div>
+</div>
+
+<script>
+  // Your web app's Firebase configuration
+  // Important to Fill:
+  // 1. apiKey
+  // 2. databaseURL
+  var firebaseConfig = {
+    apiKey: "AIzaSyB5ujV2hW2ijNoSlf2q-S8uhM86Z6MNegs",
+    // authDomain: "myapplication-58028.firebaseapp.com",
+    databaseURL: "https://myapplication-58028.firebaseio.com",
+    // projectId: "myapplication-58028",
+    // storageBucket: "myapplication-58028.appspot.com",
+    // messagingSenderId: "975281997450",
+    // appId: "1:975281997450:web:b05fedc8aef6126c58cf73"
+  };
+  // Initialize Firebase
+  var firebaseInstance = firebase.initializeApp(firebaseConfig);
+
+  var connectedRef = firebase.database().ref(".info/connected");
+  connectedRef.on("value", function(snap) {
+    if (snap.val() === true) {
+      document.getElementById("connection-status").innerText = "Connected";
+    } else {
+      document.getElementById("connection-status").innerText = "not connected";
+    }
+  });
+
+  firebase.database().ref("testing/testing").set({
+    testing: "testing"
+  }, function(error) {
+    if(error) {
+      document.getElementById("write-status").innerText = "Not enough permission to write";
+    }
+    else {
+      document.getElementById("write-status").innerText = "Success";
+    }
+  })
+
+  try {
+    var connectedRef = firebase.database().ref("testing/testing/testing")
+    connectedRef.on("value", function(snap) {
+      if(snap.val() === "") {
+        document.getElementById("read-status").innerText = "Not enough permission to read";
+      }
+      else {
+        document.getElementById("read-status").innerText = "Success";
+      }
+    });
+  } catch (error) {
+    console.log(error)
+  }
+</script>
